@@ -59,8 +59,9 @@ fixRdFile <- function(fileName) {
   page <- gsub("\\\\Sexpr[^\n]*\n", "", page)
   SqlRender::writeSql(page, fileName)
 }
-fixRdFile("man/DatabaseConnectorConnection-class.Rd")
-fixRdFile("man/dbGetInfo-DatabaseConnectorDriver-method.Rd")
+for (file in list.files("man", ".*.Rd")) {
+  fixRdFile(file.path("man", file))
+}
 pkgdown::build_site()
 OhdsiRTools::fixHadesLogo()
 
@@ -93,6 +94,12 @@ databaseSchema <- Sys.getenv("CDM5_POSTGRESQL_OHDSI_SCHEMA")
 tables <- getTableNames(connection, databaseSchema)
 sql <- paste(sprintf("DROP TABLE %s.\"%s\" CASCADE;", databaseSchema, tables), collapse= "\n")
 executeSql(connection, sql)
+
+schemas <- querySql(connection, "SELECT schema_name FROM information_schema.schemata;")[, 1]
+schemas <- schemas[grepl("^r[0-9]+$", schemas)]
+sql <- paste(sprintf("DROP SCHEMA %s CASCADE;", schemas), collapse= "\n")
+executeSql(connection, sql)
+
 disconnect(connection)
 
 # SQL Server
