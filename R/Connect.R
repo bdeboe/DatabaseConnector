@@ -760,7 +760,7 @@ connectIris <- function(connectionDetails) {
     } else {
       port <- connectionDetails$port()
     }
-    connectionString <- paste0("jdbc:iris://", connectionDetails$server(), ":", port, "/USER")  # use a full connection string for nondefault database
+    connectionString <- paste0("jdbc:IRIS://", connectionDetails$server(), ":", port, "/USER")  # use a full connection string for nondefault database
     if (!is.null(connectionDetails$extraSettings)) {
       connectionString <- paste(connectionString, connectionDetails$extraSettings, sep = ";")
     }
